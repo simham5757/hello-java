@@ -18,7 +18,7 @@ spec:
       - name: hello-devops
         image: mytub/ganta
         ports:
-        - containerPort: 5000
+        - containerPort: 8080
 ---
 apiVersion: v1
 kind: Service
@@ -29,6 +29,6 @@ spec:
   selector:
     app: hello-devops
   ports:
-  - port: 5000
-    targetPort: 5000
+  - port: 8080
+    targetPort: 8080
     nodePort: 31000
