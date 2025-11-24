@@ -12,6 +12,19 @@ spec:
       labels:
         app: hello-devops
     spec:
+      livenessProbe:
+         httpGet:
+           path: /actuator/health
+           port: 8080
+      initialDelaySeconds: 10
+      periodSeconds: 10
+
+      readinessProbe:
+         httpGet:
+           path: /actuator/health
+           port: 8080
+      initialDelaySeconds: 5
+      periodSeconds: 5
       imagePullSecrets:
       - name: dockerhub-secret
       containers:
@@ -32,3 +45,4 @@ spec:
   - port: 8080
     targetPort: 8080
     nodePort: 31000
+
