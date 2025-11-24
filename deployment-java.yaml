@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello-java
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-devops
+  template:
+    metadata:
+      labels:
+        app: hello-devops
+    spec:
+      imagePullSecrets:
+      - name: dockerhub-secret
+      containers:
+      - name: hello-devops
+        image: mytub/ganta
+        ports:
+        - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: hello-devops-service
+spec:
+  type: NodePort
+  selector:
+    app: hello-devops
+  ports:
+  - port: 5000
+    targetPort: 5000
+    nodePort: 31000

@@ -21,6 +21,28 @@ pipeline {
        archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
      }
   }
+  stage('Docker Build and Push') {
+    steps {
+        script {
+            dockerImage = docker.build("mytub/ganta:${BUILD_NUMBER}")
+            withDockerRegistry(credentialsId: 'dockerhub_creds', url: 'https://index.docker.io/v1/') {
+                dockerImage.push()
+            }
+        }
+    }
+  }
+
+  stage('Deploy to K3s') {
+    steps {
+        sh """
+        export KUBECONFIG=/var/lib/jenkins/.kube/config
+        sed -i "s#image:.*#image: mytub/ganta:${BUILD_NUMBER}#g" deployment-java.yaml
+        kubectl apply -f deployment-java.yaml
+        kubectl rollout status deployment/hello-java
+        """
+    }
+  }
+
  }
  post {
    success
