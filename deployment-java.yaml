@@ -42,7 +42,24 @@ spec:
   selector:
     app: hello-devops
   ports:
-  - port: 8080
+  - name: http
+    port: 8080
     targetPort: 8080
     nodePort: 31000
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: hello-servicemonitor
+  namespace: monitoring
+  labels:
+    release: monitor
+spec:
+  selector:
+    matchLabels:
+      app: hello-devops
+  endpoints:
+  - port: http
+    path: /actuator/prometheus
+    interval: 10s
 
